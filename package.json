@@ -1,0 +1,17 @@
+{
+  "name": "block-id",
+  "version": "1.0.0",
+  "description": "BlockID blockchain identification system",
+  "main": "truffle.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "dev": "lite-server"
+  },
+  "author": "github.com/ask03",
+  "license": "ISC",
+  "devDependencies": {
+    "lite-server": "^2.4.0"
+  }
+}
