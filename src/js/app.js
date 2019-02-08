@@ -27,7 +27,44 @@ App = {
       App.contracts.BlockID.deployed().then(function(blockId) {
         console.log("BlockID Address:", blockId.address);
       });
+      return App.render();
+
     });
+  },
+
+  render: function() {
+    if (App.loading) {
+      return;
+    }
+    App.loading = true;
+
+    var loader = $('#loader');
+    var content = $('#content');
+
+    loader.show();
+    // content.hide();
+
+    web3.eth.getCoinbase(function(err, account) {
+      if(err == null) {
+        App.account = account;
+        $('#accountAddress').html("Your Account: " + account);
+      }
+    })
+
+    var bdayGroupYear = $('#bdayGroupYear');
+    bdayGroupYear.empty();
+    for(var i = 1900; i <= 2019; i++) {
+      var dobYear = "<option value='" + i + "'>" + i + "</option>";
+      bdayGroupYear.append(dobYear);
+    }
+
+  },
+
+  registerId: function() {
+    $('#content').hide();
+    $('#loader').show();
+
+    // var
   }
 
 }

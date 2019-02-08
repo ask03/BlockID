@@ -9,16 +9,129 @@
     <link href="css/bootstrap.min.css" rel ="stylesheet">
   </head>
   <body>
-  <div class="container" style="width: 650px;">
-    <div class="row">
-      <div class="col-lg-12">
-        <h1 class="text-center">Register BlockID</h1>
+    <div class="container" style="width: 650px;">
+      <div>
+        <div class="col-lg-12">
+          <h1 class="text-center">Register BlockID</h1>
+          <hr/>
+          <br/>
+        </div>
+        <div id="loader">
+          <p class="text-center">Loading...</p>
+        </div>
+        <div id="content">
+          <p>
+            Please fill out required information
+          </p>
+          <br/>
+          <form onSubmit="App.registerId(); return false;" role="form">
+            <div class="form-group">
+              <label for="inputFirstName">First Name:</label>
+              <input type="text" class="form-control" id="inputFirstName">
+            </div>
+            <div class="form-group">
+              <label for="inputMidName">Middle Name:</label>
+              <input type="text" class="form-control" id="inputMidName">
+            </div>
+            <div class="form-group">
+              <label for="inputLastName">Last Name:</label>
+              <input type="text" class="form-control" id="inputLastName">
+            </div>
+            <div class="form-group">
+              <label for="inputGender">Gender</label>
+              <select class="form-control" id="inputGender">
+                <option value="m">Male</option>
+                <option value="f">Female</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="inputEthnicity">Ethnicity:</label>
+              <input type="text" class="form-control" id="inputEthnicity">
+            </div>
+            <div class="form-group">
+              <label for="inputCitizenship">Citizenship</label>
+              <input type="text" class="form-control" id="inputCitizenship">
+            </div>
+
+            <label for="dobGroup">Date of Birth:</label>
+            <div class="form-group" id="dobGroup">
+
+              <div class="btn-group">
+                <div class="form-group">
+
+                  <select class="form-control" id="bdayGroupMonth">
+                    <option value="">Jan</option>
+                    <option value="">Feb</option>
+                    <option value="">Mar</option>
+                    <option value="">Apr</option>
+                    <option value="">May</option>
+                    <option value="">Jun</option>
+                    <option value="">Jul</option>
+                    <option value="">Aug</option>
+                    <option value="">Sep</option>
+                    <option value="">Oct</option>
+                    <option value="">Nov</option>
+                    <option value="">Dec</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <select class="form-control" id="bdayGroupDay">
+                    <option value="">1</option>
+                    <option value="">2</option>
+                    <option value="">3</option>
+                    <option value="">4</option>
+                    <option value="">5</option>
+                    <option value="">6</option>
+                    <option value="">7</option>
+                    <option value="">8</option>
+                    <option value="">9</option>
+                    <option value="">10</option>
+                    <option value="">11</option>
+                    <option value="">12</option>
+                    <option value="">13</option>
+                    <option value="">14</option>
+                    <option value="">15</option>
+                    <option value="">16</option>
+                    <option value="">17</option>
+                    <option value="">18</option>
+                    <option value="">19</option>
+                    <option value="">20</option>
+                    <option value="">21</option>
+                    <option value="">22</option>
+                    <option value="">23</option>
+                    <option value="">24</option>
+                    <option value="">25</option>
+                    <option value="">26</option>
+                    <option value="">27</option>
+                    <option value="">28</option>
+                    <option value="">29</option>
+                    <option value="">30</option>
+                    <option value="">31</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <select class="form-control" id="bdayGroupYear">
+                  </select>
+                </div>
+              </div>
+
+            </div>
+            <span class="input-group-btn">
+              <button type="submit" class="btn btn-primary btn-lg">Submit</button>
+            </span>
+          </form>
+          <br>
+          <hr>
+          <p id="accountAddress"></p>
+
+        </div>
       </div>
     </div>
-  </div>
-  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-  <script src="js/bootstrap.min.js"></script>
-  <script src="js/web3.min.js"></script>
-  <script src="js/truffle-contract.min.js"></script>
-  <script src="js/app.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/web3.min.js"></script>
+    <script src="js/truffle-contract.min.js"></script>
+    <script src="js/app.js"></script>
   </body>
+</html>

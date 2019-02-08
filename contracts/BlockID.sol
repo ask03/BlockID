@@ -6,12 +6,11 @@ contract BlockID {
 
   struct Identification {
     string firstName;
-    string lastName;
     string middleName;
+    string lastName;
     string gender;
-    string nationality;
+    string ethnicity;
     string citizenship;
-    uint ssn;
     uint dob;
   }
 
@@ -23,7 +22,7 @@ contract BlockID {
   mapping(bytes32 => address) public nameRegistry;
 
   function createId(string memory _firstName, string memory _gender) public {
-    Identification memory id = Identification(_firstName,"","", _gender, "","", 0, 0);
+    Identification memory id = Identification(_firstName,"","", _gender, "", "", 0);
     personalId[msg.sender] = id;
 
   }
