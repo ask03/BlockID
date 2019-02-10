@@ -6,7 +6,7 @@ App = {
 
   init: function() {
     console.log("App initialized...")
-    return App.initWeb3();
+    App.initWeb3();
   },
 
   initWeb3: function() {
@@ -17,7 +17,25 @@ App = {
       App.web3Provider = new Web3.providers.HttpProvider('http://localhost:7545');
       web3 = new Web3(App.web3Provider);
     }
-    return App.initContracts();
+
+    web3.eth.getCoinbase(function(err, account) {
+      if(err == null) {
+        App.account = account;
+          $('#accountAddress').html("Your Account: " + account);
+        console.log(App.account);
+        App.contracts.BlockID.deployed().then(function(instance) {
+          return instance.personalId(account);
+        }).then(function(tmpId){
+          if(tmpId[0] !== "") {
+            //fill in redirect
+            window.location.href='index2.html'
+          }
+        })
+      }
+    })
+
+    console.log(App.account);
+    App.initContracts();
   },
 
   initContracts: function() {
@@ -26,30 +44,30 @@ App = {
       App.contracts.BlockID.setProvider(App.web3Provider);
       App.contracts.BlockID.deployed().then(function(blockId) {
         console.log("BlockID Address:", blockId.address);
+        App.loading = false;
       });
-      return App.render();
-
+      console.log(App.account);
+      App.render();
     });
+
+
   },
+
+
+
+
 
   render: function() {
     if (App.loading) {
       return;
     }
     App.loading = true;
-
+    console.log(App.account);
     var loader = $('#loader');
     var content = $('#content');
 
     loader.show();
-    // content.hide();
-
-    web3.eth.getCoinbase(function(err, account) {
-      if(err == null) {
-        App.account = account;
-        $('#accountAddress').html("Your Account: " + account);
-      }
-    })
+    content.hide();
 
     var bdayGroupYear = $('#bdayGroupYear');
     bdayGroupYear.empty();
@@ -58,16 +76,62 @@ App = {
       bdayGroupYear.append(dobYear);
     }
 
+    var bdayGroupDay = $('#bdayGroupDay');
+    bdayGroupDay.empty();
+    for(var i = 1; i <= 31; i++) {
+      var dobDay = "<option value='" + i + "'>" + i + "</option>";
+      bdayGroupDay.append(dobDay);
+    }
+
+    loader.hide();
+    content.show();
+
   },
 
   registerId: function() {
     $('#content').hide();
     $('#loader').show();
 
-    // var
+    var firstName = $('#inputFirstName').val();
+    var middleName = $('#inputMidName').val();
+    var lastName = $('#inputLastName').val();
+    var gender = $('#inputGender').val();
+    var ethnicity = $('#inputEthnicity').val();
+    var nationality = $('#inputNationality').val();
+    var bdayYear = $('#bdayGroupYear').val();
+    var bdayDay = $('#bdayGroupDay').val();
+    var bdayMonth = $('#bdayGroupMonth').val();
+
+    if ((bdayDay / 10) < 1) {
+      bdayDay = 0 + bdayDay;
+    }
+    if ((bdayMonth /10) < 1) {
+      bdayMonth = 0 + bdayMonth;
+    }
+
+    var dob = bdayDay + bdayYear + bdayMonth;
+
+    App.contracts.BlockID.deployed().then(function(instance) {
+      return instance.createId(firstName, middleName, lastName, nationality,
+      dob, ethnicity, gender, {
+        from: App.account,
+        gas: 500000
+      });
+    }).then(function(receipt) {
+      if(receipt.receipt.status == 1) {
+        alert("Registration Successful");
+      } else {
+        alert("Registration Failure");
+      }
+    })
+
   }
 
 }
+
+
+
+
 
 $(function() {
   $(window).on('load', function() {

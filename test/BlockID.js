@@ -15,11 +15,16 @@ contract('BlockID', function(accounts) {
   it('creates id with no issues', function() {
     return BlockID.deployed().then(function(instance) {
       blockIdInstance = instance;
-      blockIdInstance.createId("Allan Kim", "male");
+      blockIdInstance.createId("Allan", "Sung Chan", "Kim", "USA", 17198512, 1, true);
       return blockIdInstance.personalId(accounts[0]);
     }).then(function(id) {
-      assert.equal(id.firstName, "Allan Kim", 'id recorded correct name');
-      assert.equal(id.gender, "male", 'id recorded correct gender');
+      assert.equal(id.firstName, "Allan", 'id recorded correct first name');
+      assert.equal(id.middleName, "Sung Chan", 'id recorded correct middle name');
+      assert.equal(id.lastName, "Kim", 'id recorded correct last name');
+      assert.equal(id.nationality, "USA", 'id recorded correct nationality');
+      assert.equal(id.dob, 17198512, 'id recorded correct dob');
+      assert.equal(id.ethnicity, 1, 'id recorded correct ethnicity');
+      assert.equal(id.gender, true, 'id recorded correct gender');
     })
   })
 

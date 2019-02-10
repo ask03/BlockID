@@ -8,21 +8,25 @@ contract BlockID {
     string firstName;
     string middleName;
     string lastName;
-    string gender;
-    string ethnicity;
-    string citizenship;
+    string nationality;
     uint dob;
+    uint ethnicity;
+    bool gender;
   }
 
   event Allowed(address _from, address _to, IDClass _class);
 
+  enum Ethnicity { Asian, Caucasian, Black, Latino, PacificIslander }
   enum IDClass { NotAllowed, Basic, General, Private }
   mapping(address => Identification) public personalId;
   mapping(address => mapping(address => IDClass)) public idAllowance;
   mapping(bytes32 => address) public nameRegistry;
 
-  function createId(string memory _firstName, string memory _gender) public {
-    Identification memory id = Identification(_firstName,"","", _gender, "", "", 0);
+  function createId(string memory _firstName,
+    string memory _middleName, string memory _lastName,
+    string memory _nationality,
+    uint _dob, uint _ethnicity, bool _gender) public {
+    Identification memory id = Identification(_firstName, _middleName, _lastName, _nationality, _dob, _ethnicity, _gender);
     personalId[msg.sender] = id;
 
   }
