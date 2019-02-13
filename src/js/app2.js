@@ -27,6 +27,7 @@ App = {
       App.contracts.BlockID.setProvider(App.web3Provider);
       App.contracts.BlockID.deployed().then(function(blockId) {
         console.log("BlockID Address:", blockId.address);
+        console.log(web3.version.api);
       })
       App.render();
     })
@@ -41,7 +42,7 @@ App = {
     var content = $('#content');
 
     loader.show();
-    // content.hide();
+    content.hide();
 
     web3.eth.getCoinbase(function(err, account) {
       if(err == null) {
@@ -51,26 +52,41 @@ App = {
     })
 
     var info = $('#info');
+    var blockIdInstance;
+    var userNameBytes;
+    var str;
     App.contracts.BlockID.deployed().then(function(blockId) {
-      return blockId.personalId(App.account);
+      blockIdInstance = blockId;
+      return blockId.addressToName(App.account);
+    }).then(function(bytes) {
+      userNameBytes = bytes;
+      return blockIdInstance.personalId(App.account);
     }).then(function(tmpId) {
-      // var firstName = tmpId[0];
-      // var middleName = tmpId[1];
-      // var lastName = tmpId[2];
-      // var nationality = tmpId[3];
-      // var dob = tmpId[4];
-      // var ethnicity = tmpId[5];
-      // var gender = tmpId[6];
+      var str = web3.toAscii(userNameBytes);
+      console.log(str);
+      console.log(userNameBytes);
+      info.append("<p>" + str + "</p> <br>");
       for(var i = 0; i < 7; i++) {
-        var insert = "<p>" + tmpId[i] + "</p> <br/>";
+        var insert = "<p>" + tmpId[i] + "</p> <br>";
         info.append(insert);
       }
 
     })
+    content.show();
+    loader.hide();
+  },
 
-  }
-
-
+  // allowViewer: function() {
+  //
+  //   var userName = $('allow-username').val();
+  //
+  //   App.contracts.BlockID.deployed().then(function(instance) {
+  //     return instance.setAllow(userName, { from: App.account })
+  //   }).then(function(receipt) {
+  //     if(receipt.receipt.status == 1)
+  //   })
+  //
+  // }
 
 }
 

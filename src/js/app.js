@@ -23,16 +23,8 @@ App = {
         App.account = account;
           $('#accountAddress').html("Your Account: " + account);
         console.log(App.account);
-        App.contracts.BlockID.deployed().then(function(instance) {
-          return instance.personalId(account);
-        }).then(function(tmpId){
-          if(tmpId[0] !== "") {
-            //fill in redirect
-            window.location.href='index2.html'
-          }
-        })
       }
-    })
+    });
 
     console.log(App.account);
     App.initContracts();
@@ -47,15 +39,37 @@ App = {
         App.loading = false;
       });
       console.log(App.account);
+      App.listenForEvents();
       App.render();
     });
 
 
   },
 
+  listenForEvents: function() {
 
+    var blockIdInstance;
+    App.contracts.BlockID.deployed().then(function(instance){
+      blockIdInstance = instance;
+      blockIdInstance.Registered({}, {
+        fromBlock: 0,
+        toBlock: 'latest'
+      }).watch(function(error, event) {
+        if(error == null) {
+          console.log("event triggered", event);
+          blockIdInstance.personalId(App.account)
+          .then(function(tmpId){
+            if(tmpId[0] !== "") {
+              //fill in redirect
+              console.log('wtf');
+              window.location.href='index2.html'
+            }
+          })
+        }
+      })
+    })
 
-
+  },
 
   render: function() {
     if (App.loading) {
@@ -92,6 +106,7 @@ App = {
     $('#content').hide();
     $('#loader').show();
 
+    var userName = $('#inputUserName').val();
     var firstName = $('#inputFirstName').val();
     var middleName = $('#inputMidName').val();
     var lastName = $('#inputLastName').val();
@@ -112,7 +127,7 @@ App = {
     var dob = bdayDay + bdayYear + bdayMonth;
 
     App.contracts.BlockID.deployed().then(function(instance) {
-      return instance.createId(firstName, middleName, lastName, nationality,
+      return instance.createId(userName, firstName, middleName, lastName, nationality,
       dob, ethnicity, gender, {
         from: App.account,
         gas: 500000
@@ -128,10 +143,6 @@ App = {
   }
 
 }
-
-
-
-
 
 $(function() {
   $(window).on('load', function() {
