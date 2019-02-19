@@ -1,8 +1,11 @@
+import ipfs from "./ipfs";
+
 App = {
   web3Provider: null,
   contracts: {},
   account: '0x0',
   loading: false,
+  imgBuffer: null,
 
   init: function() {
     console.log("App initialized...")
@@ -102,6 +105,17 @@ App = {
 
   },
 
+  loadImg: function(event) {
+    console.log("capture and load img...");
+    const file = event.files[0];
+    const reader = new window.FileReader();
+    reader.readAsArrayBuffer(file)
+    reader.onloadend = () =>{
+      App.imgBuffer = new Uint8Array(reader.result);
+      console.log('buffer', App.imgBuffer);
+    }
+  },
+
   registerId: function() {
     $('#content').hide();
     $('#loader').show();
@@ -124,21 +138,29 @@ App = {
       bdayMonth = 0 + bdayMonth;
     }
 
-    var dob = bdayDay + bdayYear + bdayMonth;
+    var dob = bdayMonth + bdayDay + bdayYear;
 
-    App.contracts.BlockID.deployed().then(function(instance) {
-      return instance.createId(userName, firstName, middleName, lastName, nationality,
-      dob, ethnicity, gender, {
-        from: App.account,
-        gas: 500000
-      });
-    }).then(function(receipt) {
-      if(receipt.receipt.status == 1) {
-        alert("Registration Successful");
-      } else {
-        alert("Registration Failure");
+    ipfs.files.add(App.imgBuffer, (err, result) => {
+      if(err) {
+        console.log(err)
+        return;
       }
+      console.log(result[0].hash);
+      // App.contracts.BlockID.deployed().then(function(instance) {
+      //   return instance.createId(userName, firstName, middleName, lastName, nationality,
+      //   dob, ethnicity, gender, {
+      //     from: App.account,
+      //     gas: 500000
+      //   });
+      // }).then(function(receipt) {
+      //   if(receipt.receipt.status == 1) {
+      //     alert("Registration Successful");
+      //   } else {
+      //     alert("Registration Failure");
+      //   }
+      // })
     })
+
 
   }
 

@@ -1,3 +1,4 @@
+
 App = {
 
   web3Provider: null,
@@ -27,7 +28,6 @@ App = {
       App.contracts.BlockID.setProvider(App.web3Provider);
       App.contracts.BlockID.deployed().then(function(blockId) {
         console.log("BlockID Address:", blockId.address);
-        console.log(web3.version.api);
       })
       App.render();
     })
@@ -38,6 +38,22 @@ App = {
       return;
     }
     App.loading = true;
+
+    var EthnicityEnum = {
+      ASIAN: 1,
+      CAUCASIAN: 2,
+      BLACK: 3,
+      LATINO: 4,
+      PACIFICISLANDER: 5,
+      properties: {
+        1: {name: "Asian", value: 1},
+        2: {name: "Caucasian", value: 2},
+        3: {name: "Black", value: 3},
+        4: {name: "Latino", value: 4},
+        5: {name: "Pacific Islander", value: 5}
+      }
+    };
+
     var loader = $('#loader');
     var content = $('#content');
 
@@ -51,10 +67,12 @@ App = {
       }
     })
 
-    var info = $('#info');
+    var nameDiv = $('#nameDiv');
+    var userNameDiv = $('#userNameDiv');
     var blockIdInstance;
     var userNameBytes;
     var str;
+    var userName;
     App.contracts.BlockID.deployed().then(function(blockId) {
       blockIdInstance = blockId;
       return blockId.addressToName(App.account);
@@ -62,20 +80,38 @@ App = {
       userNameBytes = bytes;
       return blockIdInstance.personalId(App.account);
     }).then(function(tmpId) {
-      var str = web3.toAscii(userNameBytes);
-      console.log(str);
+      userName = web3.toAscii(userNameBytes);
       console.log(userNameBytes);
-      info.append("<p>" + str + "</p> <br>");
-      for(var i = 0; i < 7; i++) {
-        var insert = "<p>" + tmpId[i] + "</p> <br>";
-        info.append(insert);
+      // info.append("<h6>" + userName + "</h6>");
+      var insert = ""
+      for(var i = 0; i < 3; i++) {
+        insert = insert + tmpId[i] +"&nbsp;"
       }
-
+      nameDiv.append("<p>" + insert + "</p>");
+      insert = "<p>" + tmpId[3] + "</p>"
+      nameDiv.append(insert);
+      var bdayStr = String(tmpId[4]);
+      var bdayMonth = bdayStr.slice(0,2);
+      var bdayDay = bdayStr.slice(2,4);
+      var bdayYear = bdayStr.slice(4,8);
+      nameDiv.append("<p>" + bdayMonth + "/" + bdayDay + "/" + bdayYear + "</p>")
+      nameDiv.append("<p>" + EthnicityEnum.properties[tmpId[5]].name + "</p>")
+      if(tmpId[6] == true) {
+        gendStr = "Male"
+      } else {
+        gendStr = "Female"
+      }
+      nameDiv.append("<p>" + gendStr + "</p>")
+      userNameDiv.append("<p>&nbsp;&nbsp;"+userName+"</p>");
     })
+
     content.show();
     loader.hide();
   },
 
+
+
+  //Continue after implementing IPFS
   // allowViewer: function() {
   //
   //   var userName = $('allow-username').val();
