@@ -90,12 +90,12 @@ App = {
       nameDiv.append("<p>" + insert + "</p>");
       insert = "<p>" + tmpId[3] + "</p>"
       nameDiv.append(insert);
-      var bdayStr = String(tmpId[4]);
+      var bdayStr = String(tmpId[5]);
       var bdayMonth = bdayStr.slice(0,2);
       var bdayDay = bdayStr.slice(2,4);
       var bdayYear = bdayStr.slice(4,8);
       nameDiv.append("<p>" + bdayMonth + "/" + bdayDay + "/" + bdayYear + "</p>")
-      nameDiv.append("<p>" + EthnicityEnum.properties[tmpId[5]].name + "</p>")
+      nameDiv.append("<p>" + EthnicityEnum.properties[tmpId[6]].name + "</p>")
       if(tmpId[6] == true) {
         gendStr = "Male"
       } else {

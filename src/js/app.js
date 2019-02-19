@@ -1,6 +1,8 @@
-import ipfs from "./ipfs";
+const Buffer = window.IpfsApi().Buffer
 
 App = {
+
+  ipfsInstance: null,
   web3Provider: null,
   contracts: {},
   account: '0x0',
@@ -20,6 +22,12 @@ App = {
       App.web3Provider = new Web3.providers.HttpProvider('http://localhost:7545');
       web3 = new Web3(App.web3Provider);
     }
+
+    App.ipfsInstance = window.IpfsApi({
+      host: 'ipfs.infura.io',
+      port: 5001,
+      protocol: 'https'
+    });
 
     web3.eth.getCoinbase(function(err, account) {
       if(err == null) {
@@ -111,14 +119,14 @@ App = {
     const reader = new window.FileReader();
     reader.readAsArrayBuffer(file)
     reader.onloadend = () =>{
-      App.imgBuffer = new Uint8Array(reader.result);
+      App.imgBuffer = Buffer(reader.result);
       console.log('buffer', App.imgBuffer);
     }
   },
 
-  registerId: function() {
-    $('#content').hide();
-    $('#loader').show();
+  registerId: function(event) {
+    // $('#content').hide();
+    // $('#loader').show();
 
     var userName = $('#inputUserName').val();
     var firstName = $('#inputFirstName').val();
@@ -140,28 +148,26 @@ App = {
 
     var dob = bdayMonth + bdayDay + bdayYear;
 
-    ipfs.files.add(App.imgBuffer, (err, result) => {
+    App.ipfsInstance.files.add(App.imgBuffer, (err, result) => {
       if(err) {
         console.log(err)
         return;
       }
       console.log(result[0].hash);
-      // App.contracts.BlockID.deployed().then(function(instance) {
-      //   return instance.createId(userName, firstName, middleName, lastName, nationality,
-      //   dob, ethnicity, gender, {
-      //     from: App.account,
-      //     gas: 500000
-      //   });
-      // }).then(function(receipt) {
-      //   if(receipt.receipt.status == 1) {
-      //     alert("Registration Successful");
-      //   } else {
-      //     alert("Registration Failure");
-      //   }
-      // })
+      App.contracts.BlockID.deployed().then(function(instance) {
+        return instance.createId(userName, firstName, middleName, lastName, nationality,
+        result[0].hash, dob, ethnicity, gender, {
+          from: App.account,
+          gas: 500000
+        });
+      }).then(function(receipt) {
+        if(receipt.receipt.status == 1) {
+          alert("Registration Successful");
+        } else {
+          alert("Registration Failure");
+        }
+      })
     })
-
-
   }
 
 }

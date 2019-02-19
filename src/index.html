@@ -23,7 +23,7 @@
             Please fill out the required information :
           </h6>
           <br/>
-          <form onSubmit="App.registerId(); return false;" role="form">
+          <form role="form">
             <div class="form-group">
               <label for="inputUserName">Unique Username:</label>
               <input type="text" class="form-control" id="inputUserName">
@@ -101,7 +101,7 @@
               </div>
             </div>
             <span class="input-group-btn">
-              <button type="submit" class="btn btn-primary btn-lg">Submit</button>
+              <button type="button" class="btn btn-primary btn-lg" onClick="App.registerId();">Submit</button>
             </span>
           </form>
           <br>
@@ -109,12 +109,11 @@
           <p id="accountAddress"></p>
           </div>
         </div>
+    <script src="https://unpkg.com/ipfs-api/dist/index.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/web3.min.js"></script>
     <script src="js/truffle-contract.min.js"></script>
-    <script type="module" src="js/ipfs.js"></script>
-    <script type="module" src="../node_modules/ipfs-api"></script>
     <script src="js/app.js"></script>
   </body>
 </html>

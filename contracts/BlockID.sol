@@ -27,7 +27,7 @@ contract BlockID {
 
   function createId(string memory _userName, string memory _firstName,
     string memory _middleName, string memory _lastName,
-    string memory _nationality,
+    string memory _nationality, string memory _imgHash,
     uint _dob, uint _ethnicity, bool _gender) public {
 
     require(registerName(_userName));
