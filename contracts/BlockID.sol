@@ -32,7 +32,7 @@ contract BlockID {
 
     require(registerName(_userName));
     Identification memory id = Identification(_firstName, _middleName,
-       _lastName, _nationality, "", _dob, _ethnicity, _gender);
+       _lastName, _nationality, _imgHash, _dob, _ethnicity, _gender);
     personalId[msg.sender] = id;
 
     emit Registered(msg.sender);

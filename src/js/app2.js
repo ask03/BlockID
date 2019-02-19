@@ -69,6 +69,7 @@ App = {
 
     var nameDiv = $('#nameDiv');
     var userNameDiv = $('#userNameDiv');
+    var imgHolderDiv = $('#imgHolderDiv');
     var blockIdInstance;
     var userNameBytes;
     var str;
@@ -84,6 +85,8 @@ App = {
       console.log(userNameBytes);
       // info.append("<h6>" + userName + "</h6>");
       var insert = ""
+      console.log(tmpId);
+      imgHolderDiv.append(`<img src="https://ipfs.infura.io/ipfs/${tmpId[4]}"/>`)
       for(var i = 0; i < 3; i++) {
         insert = insert + tmpId[i] +"&nbsp;"
       }
