@@ -67,19 +67,13 @@ App = {
         toBlock: 'latest'
       }).watch(function(error, event) {
         if(error == null) {
-          console.log("event triggered", event);
-          blockIdInstance.personalId(App.account)
-          .then(function(tmpId){
-            if(tmpId[0] !== "") {
-              //fill in redirect
-              console.log('wtf');
-              window.location.href='index2.html'
-            }
-          })
+          if(event.args._address == App.account) {
+            console.log("event triggered", event);
+            window.location.href='index2.html';
+          }
         }
       })
     })
-
   },
 
   render: function() {

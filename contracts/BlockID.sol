@@ -15,7 +15,7 @@ contract BlockID {
     bool gender;
   }
 
-  event Allowed(address _from, address _to);
+  event Allowed(address indexed _from, address indexed _to);
   event Registered(address indexed _address);
 
   enum Ethnicity { Asian, Caucasian, Black, Latino, PacificIslander }
@@ -48,28 +48,33 @@ contract BlockID {
     return true;
   }
 
-  function returnAddress(string memory _name) public view returns(address) {
-    bytes32 name = stringToBytes32(_name);
-    require(nameRegistry[name] != address(0));
-    return nameRegistry[name];
+  function returnAddress(string memory _userName) public view returns(address) {
+    require(validId(_userName));
+    return nameRegistry[stringToBytes32(_userName)];
   }
 
-  function setAllow(string memory _name) public {
-    bytes32 name = stringToBytes32(_name);
-    require(nameRegistry[name] != address(0));
-    address allow = nameRegistry[name];
+  function setAllow(string memory _userName) public {
+    bytes32 userName = stringToBytes32(_userName);
+    require(nameRegistry[userName] != address(0));
+    address allowAddress = nameRegistry[userName];
     /* IDClass class = IDClass(_class); */
-    idAllowance[msg.sender][allow] = true;
-    emit Allowed(msg.sender, allow);
+    idAllowance[msg.sender][allowAddress] = true;
+    emit Allowed(msg.sender, allowAddress);
   }
 
-  function requestId(address _idAddress) public {
+  function requestId(address _idAddress) public view {
     require(idAllowance[_idAddress][msg.sender]);
   }
 
-  /* function bytes32ToString(bytes32 memory source) private pure returns (string result) {
+  function validId(string memory _userName) public view returns(bool) {
+    bytes32 userName = stringToBytes32(_userName);
+    if(nameRegistry[userName] == address(0) ||
+    addressToName[nameRegistry[userName]] != userName) {
+      return false;
+    }
 
-  } */
+    return true;
+  }
 
   function stringToBytes32(string memory source) private pure returns (bytes32 result) {
     bytes memory tempEmptyStringTest = bytes(source);

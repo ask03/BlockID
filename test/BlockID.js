@@ -15,19 +15,22 @@ contract('BlockID', function(accounts) {
   it('creates id with no issues', function() {
     return BlockID.deployed().then(function(instance) {
       blockIdInstance = instance;
-      blockIdInstance.createId("WhyHelloThere", "Allan", "Sung Chan", "Kim", "USA", 17198512, 1, true);
+      blockIdInstance.createId("WhyHelloThere", "Allan", "Sung Chan", "Kim", "USA",
+      "Qmc8UqSzDTHJC2tiN89gxfVHAJSDk55s3roM6KrYZknYiE", 17198512, 1, true);
       return blockIdInstance.personalId(accounts[0]);
     }).then(function(id) {
       assert.equal(id.firstName, "Allan", 'id recorded correct first name');
       assert.equal(id.middleName, "Sung Chan", 'id recorded correct middle name');
       assert.equal(id.lastName, "Kim", 'id recorded correct last name');
       assert.equal(id.nationality, "USA", 'id recorded correct nationality');
+      assert.equal(id.imgHash, "Qmc8UqSzDTHJC2tiN89gxfVHAJSDk55s3roM6KrYZknYiE", "id has correct imgHash");
       assert.equal(id.dob, 17198512, 'id recorded correct dob');
       assert.equal(id.ethnicity, 1, 'id recorded correct ethnicity');
       assert.equal(id.gender, true, 'id recorded correct gender');
-      return blockIdInstance.createId("WhyHelloThere", "","","","",1234567,1, true);
+      return blockIdInstance.createId("WhyHelloThere", "","","","","", 1234567,1, true);
     }).then(assert.fail).catch(function(error) {
       assert(error.message.indexOf('revert') >= 0, 'it reverts for duplicate username');
+
     })
 
   })
@@ -53,6 +56,12 @@ contract('BlockID', function(accounts) {
       return blockIdInstance.returnAddress("donkey");
     }).then(assert.fail).catch(function(error) {
       assert(error.message.indexOf('revert') >= 0, 'it reverts for non registered name');
+      return blockIdInstance.validId.call("donkey");
+    }).then((result) => {
+      assert.equal(result, false, 'validId() returns false for bad username')
+      return blockIdInstance.validId.call("Taco Bell");
+    }).then((result) => {
+      assert.equal(result, true, 'validId() returns true for valid username');
     })
   })
 
@@ -71,7 +80,7 @@ contract('BlockID', function(accounts) {
       return blockIdInstance.idAllowance(accounts[0], accounts[2]);
     }).then(function(success) {
       console.log(success);
-      assert.equal(success, true);
+      assert.equal(success, true, 'it correctly allows and returns true');
     })
   })
 

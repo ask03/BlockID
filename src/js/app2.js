@@ -29,7 +29,29 @@ App = {
       App.contracts.BlockID.deployed().then(function(blockId) {
         console.log("BlockID Address:", blockId.address);
       })
+      App.listenForAllowEvent();
       App.render();
+    })
+  },
+
+  listenForAllowEvent: function() {
+    var blockIdInstance;
+    var addressArr = [];
+    App.contracts.BlockID.deployed().then((instance) => {
+      blockIdInstance = instance;
+      return blockIdInstance.Allowed({}, {
+        fromBlock: 0,
+        toBlock: 'latest'
+      }).watch(function(error, event) {
+        if(error == null) {
+          if(event.args._to == App.account) {
+            console.log(event);
+            addressArr.push(event.args._from);
+            console.log(addressArr.length);
+
+          }
+        }
+      })
     })
   },
 
@@ -86,7 +108,7 @@ App = {
       // info.append("<h6>" + userName + "</h6>");
       var insert = ""
       console.log(tmpId);
-      imgHolderDiv.append(`<img src="https://ipfs.infura.io/ipfs/${tmpId[4]}"/>`)
+      imgHolderDiv.append(`<img src="https://ipfs.infura.io/ipfs/${tmpId[4]}" class="img-fluid"/>`)
       for(var i = 0; i < 3; i++) {
         insert = insert + tmpId[i] +"&nbsp;"
       }
@@ -113,19 +135,31 @@ App = {
   },
 
 
+  allowViewer: function() {
 
-  //Continue after implementing IPFS
-  // allowViewer: function() {
-  //
-  //   var userName = $('allow-username').val();
-  //
-  //   App.contracts.BlockID.deployed().then(function(instance) {
-  //     return instance.setAllow(userName, { from: App.account })
-  //   }).then(function(receipt) {
-  //     if(receipt.receipt.status == 1)
-  //   })
-  //
-  // }
+    var userName = $('#allowUsername').val();
+    console.log(userName);
+
+    var blockIdInstance;
+    App.contracts.BlockID.deployed().then(function(instance) {
+      blockIdInstance = instance;
+      return blockIdInstance.validId.call(userName)
+    }).then(function(success) {
+      if(success) {
+        blockIdInstance.setAllow(userName, {from: App.account}).then((receipt) => {
+          if(receipt.receipt.status == 1) {
+            $('#allowModal').modal('hide');
+            alert(`Allowed "${userName}" successfully.`)
+          } else {
+            alert(`"${userName}" does not exist.`)
+          }
+        });
+      } else {
+        alert(`"${userName}" does not exist. Check username and try again.`)
+      }
+    })
+  }
+
 
 }
 

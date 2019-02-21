@@ -22,19 +22,25 @@
         <div class="container">
           <div id="imgHolderDiv">
           </div>
-          <div class ="row" id="info">
-            <div id="labelDiv">
-              <h6>Name:</h6>
-              <h6>Nationality:</h6>
-              <h6>Date of Birth:</h6>
-              <h6>Ethnicity:</h6>
-              <h6>Gender:</h6>
+
+            <div class="row" style="margin-left:0;" >
+            <div class="row" class="col-sm-6" style="margin-left:0;" >
+              <div id="labelDiv">
+                <h6>Name:</h6>
+                <h6>Nationality:</h6>
+                <h6>Date of Birth:</h6>
+                <h6>Ethnicity:</h6>
+                <h6>Gender:</h6>
+              </div>
+              <div id="nameDiv"></div>
             </div>
-            <div id="nameDiv"></div>
-            <div class="row" id="userNameDiv">
+
+
+            <div class="row" class="col-sm-6" id="userNameDiv" style="margin:auto;">
               <h6>Username:</h6>
             </div>
           </div>
+
         </div>
         <!-- Modal + bottom buttons -->
         <div class="row">
@@ -54,14 +60,16 @@
                     </button>
                   </div>
                   <div class="modal-body">
-                    <label for="allow-username" class="col-form-label">Enter Username:</label>
-                    <input type="text" class="form-control" id="allow-username">
-                    <div id="invalidUser">
+                    <div class="form-group">
+                      <label for="allow-username">Enter Username:</label>
+                      <input type="text" class="form-control" id="allowUsername">
                     </div>
                   </div>
                   <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Allow</button>
+
+                    <button type="button" class="btn btn-primary" onClick="App.allowViewer();">Allow</button>
+
                   </div>
                 </div>
               </div>
@@ -72,6 +80,28 @@
               <span class="input-group-btn">
                 <button type="submit" class="btn btn-primary">View ID</button>
               </span>
+            </div>
+            <div class="modal fade" id="viewModal" tabindex="-1" role="dialog" aria-labelledby="viewModalLabel" aria-hidden="true">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                  <h6 class="modal-title" id="viewModalLabel">View ID<h6>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    <div class="form-group">
+                      <label for="viewUsername">Enter Username:</label>
+                      <input type="text" class="form-control" id="viewUsername">
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onClick=>Allow</button>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
