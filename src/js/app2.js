@@ -6,6 +6,14 @@ App = {
   account: 0x0,
   loading: false,
 
+  ethnicity:{
+      1: {name: "Asian", value: 1},
+      2: {name: "Caucasian", value: 2},
+      3: {name: "Black", value: 3},
+      4: {name: "Latino", value: 4},
+      5: {name: "Pacific Islander", value: 5},
+  },
+
   init: function() {
     console.log("App2 initialized...")
     App.initWeb3();
@@ -36,7 +44,7 @@ App = {
 
   listenForAllowEvent: function() {
     var blockIdInstance;
-    var addressArr = [];
+    var userName;
     App.contracts.BlockID.deployed().then((instance) => {
       blockIdInstance = instance;
       return blockIdInstance.Allowed({}, {
@@ -46,8 +54,12 @@ App = {
         if(error == null) {
           if(event.args._to == App.account) {
             console.log(event);
-            addressArr.push(event.args._from);
-            console.log(addressArr.length);
+            blockIdInstance.addressToName(event.args._from).then((usernameBytes) => {
+              userName = web3.toAscii(usernameBytes);
+              $('#list-tab').append(`<a class="list-group-item list-group-item-action" id="${userName}list" data-toggle="list"
+              href="#list-${userName}" role="tab" aria-controls="${userName}" onClick="App.loadImgForView(this);">${userName}</a>`)
+
+            })
 
           }
         }
@@ -60,21 +72,6 @@ App = {
       return;
     }
     App.loading = true;
-
-    var EthnicityEnum = {
-      ASIAN: 1,
-      CAUCASIAN: 2,
-      BLACK: 3,
-      LATINO: 4,
-      PACIFICISLANDER: 5,
-      properties: {
-        1: {name: "Asian", value: 1},
-        2: {name: "Caucasian", value: 2},
-        3: {name: "Black", value: 3},
-        4: {name: "Latino", value: 4},
-        5: {name: "Pacific Islander", value: 5}
-      }
-    };
 
     var loader = $('#loader');
     var content = $('#content');
@@ -120,7 +117,7 @@ App = {
       var bdayDay = bdayStr.slice(2,4);
       var bdayYear = bdayStr.slice(4,8);
       nameDiv.append("<p>" + bdayMonth + "/" + bdayDay + "/" + bdayYear + "</p>")
-      nameDiv.append("<p>" + EthnicityEnum.properties[tmpId[6]].name + "</p>")
+      nameDiv.append("<p>" + App.ethnicity[tmpId[6]].name + "</p>")
       if(tmpId[6] == true) {
         gendStr = "Male"
       } else {
@@ -134,6 +131,65 @@ App = {
     loader.hide();
   },
 
+  loadImgForView: function(event) {
+
+    var imgDiv = $('#tabContent-imgDiv');
+    var idList = $('#tabContent-idList');
+    imgDiv.empty();
+    var userName = $(event).html();
+    console.log(userName);
+    var imgHash;
+    var blockIdInstance;
+    App.contracts.BlockID.deployed().then((instance) => {
+      blockIdInstance = instance;
+      return blockIdInstance.returnAddress(userName);
+    }).then((address) => {
+      return blockIdInstance.personalId(address);
+    }).then((tmpId) => {
+      var firstName = tmpId[0];
+      var midName = tmpId[1];
+      var lastName = tmpId[2];
+      var fullName = `${firstName} ${midName} ${lastName}`;
+      var nationality = tmpId[3];
+      var imgHash = tmpId[4];
+      var dob = App.makeDob(tmpId[5]);
+      var ethnicity = App.ethnicity[tmpId[6]].name;
+      var gender = App.getGender(tmpId[7]);
+
+      idList.empty();
+      idList.append(`<p>${fullName}</p>`);
+      idList.append(`<p>${nationality}</p>`)
+      idList.append(`<p>${dob}</p>`);
+      idList.append(`<p>${ethnicity}`);
+      idList.append(`<p>${gender}`);
+      imgDiv.append(`<img src="https://ipfs.infura.io/ipfs/${imgHash}" class="img-fluid"/>`)
+
+    })
+
+
+
+  },
+
+  makeDob: function(dob) {
+
+    var rawString = String(dob);
+    var dobMonth = rawString.slice(0,2);
+    var dobDay = rawString.slice(2,4);
+    var dobYear = rawString.slice(4,8);
+
+    var dobString = `${dobMonth}/${dobDay}/${dobYear}`;
+    return dobString;
+
+  },
+
+  getGender: function(gender) {
+
+    if(gender == true) {
+      return "Male"
+    }
+    return "Female"
+
+  },
 
   allowViewer: function() {
 
