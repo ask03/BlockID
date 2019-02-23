@@ -10,7 +10,7 @@ contract BlockID {
     string lastName;
     string nationality;
     string imgHash;
-    uint dob;
+    string dob;
     uint ethnicity;
     bool gender;
   }
@@ -24,11 +24,17 @@ contract BlockID {
   mapping(address => mapping(address => bool)) public idAllowance;
   mapping(bytes32 => address) public nameRegistry;
   mapping(address => bytes32) public addressToName;
+  mapping(address => uint) public deposits;
+
+  /* contract is payable with deposits from users */
+  function() external payable {
+    deposits[msg.sender] += msg.value;
+  }
 
   function createId(string memory _userName, string memory _firstName,
     string memory _middleName, string memory _lastName,
     string memory _nationality, string memory _imgHash,
-    uint _dob, uint _ethnicity, bool _gender) public {
+    string memory _dob, uint _ethnicity, bool _gender) public {
 
     require(registerName(_userName));
     Identification memory id = Identification(_firstName, _middleName,
@@ -74,6 +80,10 @@ contract BlockID {
     }
 
     return true;
+  }
+
+  function deposit() external payable {
+    deposits[msg.sender] += msg.value;
   }
 
   function stringToBytes32(string memory source) private pure returns (bytes32 result) {

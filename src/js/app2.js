@@ -1,11 +1,10 @@
 
 App = {
-
+  //app state values
   web3Provider: null,
   contracts: {},
   account: 0x0,
   loading: false,
-
   ethnicity:{
       1: {name: "Asian", value: 1},
       2: {name: "Caucasian", value: 2},
@@ -13,7 +12,7 @@ App = {
       4: {name: "Latino", value: 4},
       5: {name: "Pacific Islander", value: 5},
   },
-
+  //initialize application
   init: function() {
     console.log("App2 initialized...")
     App.initWeb3();
@@ -53,18 +52,16 @@ App = {
       }).watch(function(error, event) {
         if(error == null) {
           if(event.args._to == App.account) {
-            console.log(event);
             blockIdInstance.addressToName(event.args._from).then((usernameBytes) => {
               userName = web3.toAscii(usernameBytes);
               $('#list-tab').append(`<a class="list-group-item list-group-item-action" id="${userName}list" data-toggle="list"
               href="#list-${userName}" role="tab" aria-controls="${userName}" onClick="App.loadImgForView(this);">${userName}</a>`)
-
             })
-
           }
         }
       })
     })
+
   },
 
   render: function() {
@@ -102,7 +99,6 @@ App = {
     }).then(function(tmpId) {
       userName = web3.toAscii(userNameBytes);
       console.log(userNameBytes);
-      // info.append("<h6>" + userName + "</h6>");
       var insert = ""
       console.log(tmpId);
       imgHolderDiv.append(`<img src="https://ipfs.infura.io/ipfs/${tmpId[4]}" class="img-fluid"/>`)
@@ -113,20 +109,16 @@ App = {
       insert = "<p>" + tmpId[3] + "</p>"
       nameDiv.append(insert);
       var bdayStr = String(tmpId[5]);
-      var bdayMonth = bdayStr.slice(0,2);
-      var bdayDay = bdayStr.slice(2,4);
-      var bdayYear = bdayStr.slice(4,8);
-      nameDiv.append("<p>" + bdayMonth + "/" + bdayDay + "/" + bdayYear + "</p>")
+      nameDiv.append("<p>" + App.makeDob(bdayStr) + "</p>")
       nameDiv.append("<p>" + App.ethnicity[tmpId[6]].name + "</p>")
-      if(tmpId[6] == true) {
-        gendStr = "Male"
-      } else {
-        gendStr = "Female"
-      }
-      nameDiv.append("<p>" + gendStr + "</p>")
+      nameDiv.append("<p>" + App.getGender(tmpId[7]) + "</p>")
       userNameDiv.append("<p>&nbsp;&nbsp;"+userName+"</p>");
+      blockIdInstance.deposits(App.account).then((balance) => {
+          var theBalance = web3.fromWei(balance.toNumber(), 'ether');
+          $('#ethBalance').append(theBalance , " Ether");
+      })
+      // $('#ethBalance').append(web3.fromWei(blockIdInstance.deposits(App.account),'ether'));
     })
-
     content.show();
     loader.hide();
   },
@@ -135,6 +127,7 @@ App = {
 
     var imgDiv = $('#tabContent-imgDiv');
     var idList = $('#tabContent-idList');
+    idList.empty();
     imgDiv.empty();
     var userName = $(event).html();
     console.log(userName);
@@ -156,17 +149,37 @@ App = {
       var ethnicity = App.ethnicity[tmpId[6]].name;
       var gender = App.getGender(tmpId[7]);
 
-      idList.empty();
       idList.append(`<p>${fullName}</p>`);
       idList.append(`<p>${nationality}</p>`)
       idList.append(`<p>${dob}</p>`);
       idList.append(`<p>${ethnicity}`);
       idList.append(`<p>${gender}`);
       imgDiv.append(`<img src="https://ipfs.infura.io/ipfs/${imgHash}" class="img-fluid"/>`)
-
     })
 
+  },
 
+  depositFunds: function() {
+    var blockIdInstance;
+    var amount = web3.toWei($('#depositInput').val());
+    App.contracts.BlockID.deployed().then((instance) => {
+      blockIdInstance = instance;
+      return blockIdInstance.deposit({
+        from: App.account,
+        value: amount,
+        gas: 500000
+      });
+    }).then((receipt) => {
+      if(receipt.receipt.status == 1) {
+        alert("deposit successful");
+        $('#depositModal').modal('hide');
+        $('#depositInput').val("");
+      } else {
+        alert("deposit failure");
+        $('#depositModal').modal('hide');
+        $('#depositInput').val("");
+      }
+    })
 
   },
 
@@ -176,7 +189,6 @@ App = {
     var dobMonth = rawString.slice(0,2);
     var dobDay = rawString.slice(2,4);
     var dobYear = rawString.slice(4,8);
-
     var dobString = `${dobMonth}/${dobDay}/${dobYear}`;
     return dobString;
 
