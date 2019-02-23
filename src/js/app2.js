@@ -5,13 +5,7 @@ App = {
   contracts: {},
   account: 0x0,
   loading: false,
-  ethnicity:{
-      1: {name: "Asian", value: 1},
-      2: {name: "Caucasian", value: 2},
-      3: {name: "Black", value: 3},
-      4: {name: "Latino", value: 4},
-      5: {name: "Pacific Islander", value: 5},
-  },
+
   //initialize application
   init: function() {
     console.log("App2 initialized...")
@@ -34,6 +28,7 @@ App = {
       App.contracts.BlockID = TruffleContract(blockId);
       App.contracts.BlockID.setProvider(App.web3Provider);
       App.contracts.BlockID.deployed().then(function(blockId) {
+        App.deployedInstance = blockId;
         console.log("BlockID Address:", blockId.address);
       })
       App.listenForAllowEvent();
@@ -109,9 +104,9 @@ App = {
       insert = "<p>" + tmpId[3] + "</p>"
       nameDiv.append(insert);
       var bdayStr = String(tmpId[5]);
-      nameDiv.append("<p>" + App.makeDob(bdayStr) + "</p>")
-      nameDiv.append("<p>" + App.ethnicity[tmpId[6]].name + "</p>")
-      nameDiv.append("<p>" + App.getGender(tmpId[7]) + "</p>")
+      nameDiv.append("<p>" + Tools.makeDob(bdayStr) + "</p>")
+      nameDiv.append("<p>" + Tools.ethnicity[tmpId[6]].name + "</p>")
+      nameDiv.append("<p>" + Tools.getGender(tmpId[7]) + "</p>")
       userNameDiv.append("<p>&nbsp;&nbsp;"+userName+"</p>");
       blockIdInstance.deposits(App.account).then((balance) => {
           var theBalance = web3.fromWei(balance.toNumber(), 'ether');
@@ -125,13 +120,8 @@ App = {
 
   loadImgForView: function(event) {
 
-    var imgDiv = $('#tabContent-imgDiv');
-    var idList = $('#tabContent-idList');
-    idList.empty();
-    imgDiv.empty();
     var userName = $(event).html();
     console.log(userName);
-    var imgHash;
     var blockIdInstance;
     App.contracts.BlockID.deployed().then((instance) => {
       blockIdInstance = instance;
@@ -139,22 +129,8 @@ App = {
     }).then((address) => {
       return blockIdInstance.personalId(address);
     }).then((tmpId) => {
-      var firstName = tmpId[0];
-      var midName = tmpId[1];
-      var lastName = tmpId[2];
-      var fullName = `${firstName} ${midName} ${lastName}`;
-      var nationality = tmpId[3];
-      var imgHash = tmpId[4];
-      var dob = App.makeDob(tmpId[5]);
-      var ethnicity = App.ethnicity[tmpId[6]].name;
-      var gender = App.getGender(tmpId[7]);
-
-      idList.append(`<p>${fullName}</p>`);
-      idList.append(`<p>${nationality}</p>`)
-      idList.append(`<p>${dob}</p>`);
-      idList.append(`<p>${ethnicity}`);
-      idList.append(`<p>${gender}`);
-      imgDiv.append(`<img src="https://ipfs.infura.io/ipfs/${imgHash}" class="img-fluid"/>`)
+      var formattedId = Tools.formatId(tmpId);
+      View.populateIdModal(formattedId);
     })
 
   },
@@ -174,32 +150,13 @@ App = {
         alert("deposit successful");
         $('#depositModal').modal('hide');
         $('#depositInput').val("");
+        App.render();
       } else {
         alert("deposit failure");
         $('#depositModal').modal('hide');
         $('#depositInput').val("");
       }
     })
-
-  },
-
-  makeDob: function(dob) {
-
-    var rawString = String(dob);
-    var dobMonth = rawString.slice(0,2);
-    var dobDay = rawString.slice(2,4);
-    var dobYear = rawString.slice(4,8);
-    var dobString = `${dobMonth}/${dobDay}/${dobYear}`;
-    return dobString;
-
-  },
-
-  getGender: function(gender) {
-
-    if(gender == true) {
-      return "Male"
-    }
-    return "Female"
 
   },
 
