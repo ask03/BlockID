@@ -48,9 +48,7 @@ App = {
         if(error == null) {
           if(event.args._to == App.account) {
             blockIdInstance.addressToName(event.args._from).then((usernameBytes) => {
-              userName = web3.toAscii(usernameBytes);
-              $('#list-tab').append(`<a class="list-group-item list-group-item-action" id="${userName}list" data-toggle="list"
-              href="#list-${userName}" role="tab" aria-controls="${userName}" onClick="App.loadImgForView(this);">${userName}</a>`)
+              View.appendViewableId(web3.toAscii(usernameBytes));
             })
           }
         }
@@ -78,9 +76,6 @@ App = {
       }
     })
 
-    var nameDiv = $('#nameDiv');
-    var userNameDiv = $('#userNameDiv');
-    var imgHolderDiv = $('#imgHolderDiv');
     var blockIdInstance;
     var userNameBytes;
     var str;
@@ -92,22 +87,8 @@ App = {
       userNameBytes = bytes;
       return blockIdInstance.personalId(App.account);
     }).then(function(tmpId) {
-      userName = web3.toAscii(userNameBytes);
-      console.log(userNameBytes);
-      var insert = ""
-      console.log(tmpId);
-      imgHolderDiv.append(`<img src="https://ipfs.infura.io/ipfs/${tmpId[4]}" class="img-fluid"/>`)
-      for(var i = 0; i < 3; i++) {
-        insert = insert + tmpId[i] +"&nbsp;"
-      }
-      nameDiv.append("<p>" + insert + "</p>");
-      insert = "<p>" + tmpId[3] + "</p>"
-      nameDiv.append(insert);
-      var bdayStr = String(tmpId[5]);
-      nameDiv.append("<p>" + Tools.makeDob(bdayStr) + "</p>")
-      nameDiv.append("<p>" + Tools.ethnicity[tmpId[6]].name + "</p>")
-      nameDiv.append("<p>" + Tools.getGender(tmpId[7]) + "</p>")
-      userNameDiv.append("<p>&nbsp;&nbsp;"+userName+"</p>");
+      var id = Tools.formatId(tmpId);
+      View.populateIdPane(id, web3.toAscii(userNameBytes));
       blockIdInstance.deposits(App.account).then((balance) => {
           var theBalance = web3.fromWei(balance.toNumber(), 'ether');
           $('#ethBalance').append(theBalance , " Ether");
@@ -184,7 +165,6 @@ App = {
       }
     })
   }
-
 
 }
 
