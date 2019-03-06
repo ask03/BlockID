@@ -90,6 +90,12 @@ contract BlockID {
     deposits[msg.sender] -= _value;
   }
 
+  function withdraw() external {
+    require(deposits[msg.sender] >= 0);
+    msg.sender.transfer(deposits[msg.sender]);
+    deposits[msg.sender] -= deposits[msg.sender];
+  }
+
   function stringToBytes32(string memory source) private pure returns (bytes32 result) {
     bytes memory tempEmptyStringTest = bytes(source);
     if (tempEmptyStringTest.length == 0) {

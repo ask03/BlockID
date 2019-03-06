@@ -91,4 +91,30 @@ contract('BlockID', function(accounts) {
       assert(error.message.indexOf('revert' >= 0, 'it reverts non allowed request'));
     })
   })
+
+  it('deposits and transfers funds and withdraws properly', function() {
+    return BlockID.deployed().then(function(instance) {
+      blockIdInstance = instance;
+      return blockIdInstance.deposit({from: accounts[0], value: 3000000000000000000});
+    }).then(function(receipt) {
+      return blockIdInstance.deposits(accounts[0]);
+    }).then(function(balance) {
+      assert.equal(balance, "3000000000000000000", 'it correctly returns the balance');
+      return blockIdInstance.transferFunds(accounts[3], "2000000000000000000", {from: accounts[0]})
+    }).then(function(receipt) {
+      return blockIdInstance.deposits(accounts[3]);
+    }).then(function(balance) {
+      assert.equal(balance, "2000000000000000000", 'it correctly transfers and returns the balance');
+      return blockIdInstance.withdraw({from: accounts[0]});
+    }).then(function(receipt) {
+      return blockIdInstance.deposits(accounts[0]);
+    }).then((balance) => {
+      assert.equal(balance, "0", 'it correctly withdrew the balance');
+      return blockIdInstance.withdraw({from: accounts[3]});
+    }).then(function(receipt) {
+      return blockIdInstance.deposits(accounts[3]);
+    }).then((balance) => {
+      assert.equal(balance, "0", 'it correctly withdrew the remaining balance');
+    })
+  })
 })
