@@ -20,7 +20,7 @@ View = {
 
     var imgHolderDiv = $('#imgHolderDiv');
     var nameDiv = $('#nameDiv');
-    var userNameDiv = $('#userNameDiv');
+    var userNameDiv = $('#balanceCol');
     var insert = ""
     imgHolderDiv.append(`<img src="https://ipfs.infura.io/ipfs/${id.imgHash}" class="img-fluid"/>`)
     nameDiv.append( `<p> ${id.name} </p>`);
@@ -29,7 +29,7 @@ View = {
     nameDiv.append("<p>" + id.dob + "</p>")
     nameDiv.append("<p>" + id.ethnicity + "</p>")
     nameDiv.append("<p>" + id.gender + "</p>")
-    userNameDiv.append("<p>&nbsp;&nbsp;"+userName+"</p>");
+    userNameDiv.append("<p>"+userName+"</p>");
 
   },
 
@@ -37,6 +37,13 @@ View = {
 
     $('#list-tab').append(`<a class="list-group-item list-group-item-action" id="${userName}list" data-toggle="list"
     href="#list-${userName}" role="tab" aria-controls="${userName}" onClick="App.loadImgForView(this);">${userName}</a>`)
+
+  },
+
+  populateBalance: function(balance) {
+
+    $('#ethBalance').append(balance , " Ether");
+    $('#balanceCol').append(`<p>${balance}</p>`);
 
   }
 

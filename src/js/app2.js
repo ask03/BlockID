@@ -91,9 +91,8 @@ App = {
       View.populateIdPane(id, web3.toAscii(userNameBytes));
       blockIdInstance.deposits(App.account).then((balance) => {
           var theBalance = web3.fromWei(balance.toNumber(), 'ether');
-          $('#ethBalance').append(theBalance , " Ether");
+          View.populateBalance(theBalance);
       })
-      // $('#ethBalance').append(web3.fromWei(blockIdInstance.deposits(App.account),'ether'));
     })
     content.show();
     loader.hide();
@@ -102,7 +101,7 @@ App = {
   loadImgForView: function(event) {
 
     var userName = $(event).html();
-    console.log(userName);
+    console.log(event);
     var blockIdInstance;
     App.contracts.BlockID.deployed().then((instance) => {
       blockIdInstance = instance;
@@ -131,13 +130,64 @@ App = {
         alert("deposit successful");
         $('#depositModal').modal('hide');
         $('#depositInput').val("");
-        App.render();
       } else {
         alert("deposit failure");
-        $('#depositModal').modal('hide');
-        $('#depositInput').val("");
       }
+      App.render();
     })
+
+
+  },
+
+  readySendEther: function(id) {
+
+    $('#viewModal').modal('hide');
+    $('#sendEtherModal').modal('show');
+    var blockIdInstance;
+    var toAccount;
+    var theBalance;
+    App.contracts.BlockID.deployed().then((instance) => {
+      blockIdInstance = instance;
+      blockIdInstance.deposits(App.account).then((balance) => {
+          theBalance = web3.fromWei(balance.toNumber(), 'ether');
+          $('#sendEthBalance').append(theBalance , " Ether");
+          blockIdInstance.returnAddress(id).then((address) => {
+            toAccount = address;
+            $('#sendEtherToUserButton').click(function() {
+                App.sendEther(toAccount);
+            })
+          })
+          })
+      })
+
+
+  },
+
+  sendEther: function(toAccount) {
+    var blockIdInstance;
+    var amount = web3.toWei($('#sendEtherInput').val(), 'ether')
+    console.log(amount);
+    App.contracts.BlockID.deployed().then((instance) => {
+      blockIdInstance = instance;
+      console.log(toAccount);
+      blockIdInstance.transferFunds(toAccount, amount, {from: App.account }).then((receipt) => {
+        if(receipt.receipt.status == 1) {
+          alert("send ether succesfully");
+        } else {
+          alert("ether transfer failure");
+        }
+      })
+    })
+
+
+
+  },
+
+  switchToSendEther: function() {
+
+    var selectedUser = $('div#list-tab a.active').html();
+    console.log(selectedUser);
+    App.readySendEther(selectedUser);
 
   },
 

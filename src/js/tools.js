@@ -11,18 +11,17 @@ Tools = {
 
   formatId: function(tmpId) {
     var firstName = tmpId[0];
-    var midName = tmpId[1];
-    var lastName = tmpId[2];
-    var fullName = `${firstName} ${midName} ${lastName}`;
+    var lastName = tmpId[1];
+    var fullName = `${firstName} ${lastName}`;
 
     let newId = {};
 
     newId.name = fullName;
-    newId.nationality = tmpId[3];
-    newId.dob = Tools.makeDob(tmpId[5]);
-    newId.imgHash = tmpId[4];
-    newId.ethnicity = Tools.ethnicity[tmpId[6]].name;
-    newId.gender = Tools.getGender(tmpId[7]);
+    newId.nationality = tmpId[2];
+    newId.dob = Tools.makeDob(tmpId[4]);
+    newId.imgHash = tmpId[3];
+    newId.ethnicity = Tools.ethnicity[tmpId[5]].name;
+    newId.gender = Tools.getGender(tmpId[6]);
 
     return newId;
   },

@@ -124,7 +124,6 @@ App = {
 
     var userName = $('#inputUserName').val();
     var firstName = $('#inputFirstName').val();
-    var middleName = $('#inputMidName').val();
     var lastName = $('#inputLastName').val();
     var gender = $('#inputGender').val();
     var ethnicity = $('#inputEthnicity').val();
@@ -149,7 +148,7 @@ App = {
       }
       console.log(result[0].hash);
       App.contracts.BlockID.deployed().then(function(instance) {
-        return instance.createId(userName, firstName, middleName, lastName, nationality,
+        return instance.createId(userName, firstName, lastName, nationality,
         result[0].hash, dob, ethnicity, gender, {
           from: App.account,
           gas: 500000

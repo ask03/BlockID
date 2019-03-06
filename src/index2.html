@@ -22,9 +22,8 @@
         <div class="container">
           <div id="imgHolderDiv">
           </div>
-
-            <div class="row" style="margin-left:0;" >
-            <div class="row" class="col-sm-6" style="margin-left:0;" >
+          <div class="row" style="margin-left:0;" >
+            <div class="row" class="col-6" style="margin-left:0;" >
               <div id="labelDiv">
                 <h6>Name:</h6>
                 <h6>Nationality:</h6>
@@ -35,10 +34,17 @@
               <div id="nameDiv"></div>
             </div>
 
+              <div id="userNameCol" class="row" style="margin: 0 auto;">
+                <div id="labelDivTwo">
+                  <h6>Username:</h6>
+                  <h6>Ether Balance:</h6>
+                </div>
+                <div id="balanceCol">
 
-            <div class="row" class="col-sm-6" id="userNameDiv" style="margin:auto;">
-              <h6>Username:</h6>
-            </div>
+                </div>
+              </div>
+
+
           </div>
 
         </div>
@@ -93,7 +99,7 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary" onClick="App.allowViewer();">Allow</button>
+            <button type="button" id="allowViewerButton" class="btn btn-primary" onClick="App.allowViewer();">Allow</button>
           </div>
         </div>
       </div>
@@ -118,7 +124,7 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary" onClick="App.depositFunds();">Deposit</button>
+            <button type="button" id="depositFundsButton" class="btn btn-primary" onClick="App.depositFunds();">Deposit</button>
           </div>
         </div>
       </div>
@@ -156,13 +162,39 @@
             </div>
           </div>
           <div class="modal-footer">
+
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary" onClick=>Send Ether</button>
+            <button type="button"  id="viewSendEtherButton" class="btn btn-primary" onClick="App.switchToSendEther(event);">Send Ether</button>
           </div>
         </div>
       </div>
     </div>
     <!-- end view id modal -->
+    <!-- begin send ether modal -->
+    <div class="modal fade" id="sendEtherModal" tabindex="-1" role="dialog" aria-labelledby="sendEtherModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+          <h6 class="modal-title" id="sendEtherModalLabel">Send Ether<h6>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <label for="sendEtherInput">Ether Amount:</label>
+              <input type="text" class="form-control" id="sendEtherInput">
+              <small id="sendEthBalance">Your balance: </small>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" id="sendEtherToUserButton" class="btn btn-primary">Send Ether</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- end send ether modal -->
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/web3.min.js"></script>

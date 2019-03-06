@@ -9,15 +9,24 @@
 #nameDiv p {
   margin: 0 auto;
 }
-#userNameDiv {
-  margin: 0 auto;
-}
+  /* #userNameDiv {
+    margin: 0 auto;
+  } */
 
-#userNameDiv p {
+/* #userNameDiv p {
   margin: 0 auto;
-}
+} */
 
-#userNameDiv h6 {
+/* #userNameCol h6 {
   margin: 0 auto;
   padding: 0 auto;
+}
+
+#userNameCol p {
+  margin: 0 auto;
+} */
+
+#balanceCol p {
+  margin:0 auto;
+  /* padding: 0 auto; */
 }

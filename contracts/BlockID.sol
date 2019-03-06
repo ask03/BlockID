@@ -6,10 +6,9 @@ contract BlockID {
 
   struct Identification {
     string firstName;
-    string middleName;
     string lastName;
     string nationality;
-    string imgHash;
+    string imgHash; //IPFS hash string img
     string dob;
     uint ethnicity;
     bool gender;
@@ -32,13 +31,12 @@ contract BlockID {
   }
 
   function createId(string memory _userName, string memory _firstName,
-    string memory _middleName, string memory _lastName,
-    string memory _nationality, string memory _imgHash,
+     string memory _lastName, string memory _nationality, string memory _imgHash,
     string memory _dob, uint _ethnicity, bool _gender) public {
 
     require(registerName(_userName));
-    Identification memory id = Identification(_firstName, _middleName,
-       _lastName, _nationality, _imgHash, _dob, _ethnicity, _gender);
+    Identification memory id = Identification(_firstName,
+    _lastName, _nationality, _imgHash, _dob, _ethnicity, _gender);
     personalId[msg.sender] = id;
 
     emit Registered(msg.sender);
@@ -84,6 +82,12 @@ contract BlockID {
 
   function deposit() external payable {
     deposits[msg.sender] += msg.value;
+  }
+
+  function transferFunds(address _to, uint _value) public {
+    require(deposits[msg.sender] >= _value);
+    deposits[_to] += _value;
+    deposits[msg.sender] -= _value;
   }
 
   function stringToBytes32(string memory source) private pure returns (bytes32 result) {
