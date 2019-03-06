@@ -15,19 +15,18 @@ contract('BlockID', function(accounts) {
   it('creates id with no issues', function() {
     return BlockID.deployed().then(function(instance) {
       blockIdInstance = instance;
-      blockIdInstance.createId("WhyHelloThere", "Allan", "Sung Chan", "Kim", "USA",
+      blockIdInstance.createId("WhyHelloThere", "Allan", "Kim", "USA",
       "Qmc8UqSzDTHJC2tiN89gxfVHAJSDk55s3roM6KrYZknYiE", "17198512", 1, true);
       return blockIdInstance.personalId(accounts[0]);
     }).then(function(id) {
       assert.equal(id.firstName, "Allan", 'id recorded correct first name');
-      assert.equal(id.middleName, "Sung Chan", 'id recorded correct middle name');
       assert.equal(id.lastName, "Kim", 'id recorded correct last name');
       assert.equal(id.nationality, "USA", 'id recorded correct nationality');
       assert.equal(id.imgHash, "Qmc8UqSzDTHJC2tiN89gxfVHAJSDk55s3roM6KrYZknYiE", "id has correct imgHash");
       assert.equal(id.dob, "17198512", 'id recorded correct dob');
       assert.equal(id.ethnicity, 1, 'id recorded correct ethnicity');
       assert.equal(id.gender, true, 'id recorded correct gender');
-      return blockIdInstance.createId("WhyHelloThere", "","","","","", "1234567",1, true);
+      return blockIdInstance.createId("WhyHelloThere", "","","","", "1234567",1, true);
     }).then(assert.fail).catch(function(error) {
       assert(error.message.indexOf('revert') >= 0, 'it reverts for duplicate username');
 
