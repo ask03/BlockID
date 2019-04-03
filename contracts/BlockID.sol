@@ -61,7 +61,6 @@ contract BlockID {
     bytes32 userName = stringToBytes32(_userName);
     require(nameRegistry[userName] != address(0));
     address allowAddress = nameRegistry[userName];
-    /* IDClass class = IDClass(_class); */
     idAllowance[msg.sender][allowAddress] = true;
     emit Allowed(msg.sender, allowAddress);
   }

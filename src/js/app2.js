@@ -133,7 +133,7 @@ App = {
       } else {
         alert("deposit failure");
       }
-      App.render();
+      location.reload();
     })
 
 
@@ -150,6 +150,7 @@ App = {
       blockIdInstance = instance;
       blockIdInstance.deposits(App.account).then((balance) => {
           theBalance = web3.fromWei(balance.toNumber(), 'ether');
+          $('#sendEthBalance').empty();
           $('#sendEthBalance').append(theBalance , " Ether");
           blockIdInstance.returnAddress(id).then((address) => {
             toAccount = address;
@@ -172,7 +173,9 @@ App = {
       console.log(toAccount);
       blockIdInstance.transferFunds(toAccount, amount, {from: App.account }).then((receipt) => {
         if(receipt.receipt.status == 1) {
-          alert("send ether succesfully");
+          alert("sent ether succesfully");
+          $('#sendEtherModal').modal('hide');
+          location.reload();
         } else {
           alert("ether transfer failure");
         }
@@ -188,6 +191,22 @@ App = {
     var selectedUser = $('div#list-tab a.active').html();
     console.log(selectedUser);
     App.readySendEther(selectedUser);
+
+  },
+
+  withdrawFunds: function() {
+    var blockIdInstance;
+    App.contracts.BlockID.deployed().then((instance) => {
+      blockIdInstance = instance;
+      return blockIdInstance.withdraw({from: App.account});
+    }).then((receipt) => {
+      if(receipt.receipt.status == 1) {
+        alert("withdrew funds successfully");
+        location.reload();
+      } else {
+        alert("withdraw failure");
+      }
+    })
 
   },
 

@@ -63,7 +63,7 @@
           <div class="col">
             <div class="col-sm text-center">
               <span class="input-group-btn">
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#depositModal">Deposit Ether</button>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#depositModal">Deposit/Withdraw</button>
               </span>
             </div>
           </div>
@@ -110,7 +110,7 @@
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-          <h6 class="modal-title" id="depositModalLabel">Deposit Ether<h6>
+          <h6 class="modal-title" id="depositModalLabel">Deposit/Withdraw Ether<h6>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -125,6 +125,7 @@
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             <button type="button" id="depositFundsButton" class="btn btn-primary" onClick="App.depositFunds();">Deposit</button>
+            <button type="button" id="withdrawFundsButton" class="btn btn-primary" onClick="App.withdrawFunds();">Withdraw</button>
           </div>
         </div>
       </div>
@@ -184,7 +185,8 @@
             <div class="form-group">
               <label for="sendEtherInput">Ether Amount:</label>
               <input type="text" class="form-control" id="sendEtherInput">
-              <small id="sendEthBalance">Your balance: </small>
+              <small>Your balance: </small>
+              <small id="sendEthBalance"></small>
             </div>
           </div>
           <div class="modal-footer">

@@ -1,4 +1,4 @@
-const Buffer = window.IpfsApi().Buffer
+const Buffer = window.IpfsHttpClient().Buffer
 
 App = {
 
@@ -23,7 +23,7 @@ App = {
       web3 = new Web3(App.web3Provider);
     }
 
-    App.ipfsInstance = window.IpfsApi({
+    App.ipfsInstance = window.IpfsHttpClient({
       host: 'ipfs.infura.io',
       port: 5001,
       protocol: 'https'
@@ -111,16 +111,16 @@ App = {
     console.log("capture and load img...");
     const file = event.files[0];
     const reader = new window.FileReader();
-    reader.readAsArrayBuffer(file)
-    reader.onloadend = () =>{
+    reader.readAsArrayBuffer(file);
+    reader.onloadend = () => {
       App.imgBuffer = Buffer(reader.result);
       console.log('buffer', App.imgBuffer);
     }
   },
 
   registerId: function(event) {
-    // $('#content').hide();
-    // $('#loader').show();
+    $('#loader').show();
+    $('#content').hide();
 
     var userName = $('#inputUserName').val();
     var firstName = $('#inputFirstName').val();
@@ -141,11 +141,12 @@ App = {
 
     var dob = bdayMonth + bdayDay + bdayYear;
 
-    App.ipfsInstance.files.add(App.imgBuffer, (err, result) => {
+    App.ipfsInstance.add(App.imgBuffer, (err, result) => {
       if(err) {
         console.log(err)
         return;
       }
+
       console.log(result[0].hash);
       App.contracts.BlockID.deployed().then(function(instance) {
         return instance.createId(userName, firstName, lastName, nationality,
@@ -154,6 +155,8 @@ App = {
           gas: 500000
         });
       }).then(function(receipt) {
+        $('#loader').hide();
+        $('#content').show();
         if(receipt.receipt.status == 1) {
           alert("Registration Successful");
         } else {
